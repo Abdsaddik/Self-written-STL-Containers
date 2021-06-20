@@ -1,6 +1,5 @@
-
 #include"Stack.hpp"
-using namespace std;
+#include"Queue.hpp"
 
 template<typename T>
 void message(T str){
@@ -13,80 +12,105 @@ void message(T1 key, T2 val){
 }
 
 template<typename T>
-void print(Stack<T>& my_stack){
-    if(my_stack.empty()) {
-        message("stack is empty!");
-        return;
-        }
-    while (my_stack.size())
-    {   
-        cout << my_stack.top() << "  ";
-        my_stack.pop();
-    }
-    cout << endl;
-    
+void fill(T& container, int size){
+    for(int cnt=0; cnt<size; cnt++) container.push(cnt+1);  
 }
 
 template<typename T>
-void fill(Stack<T>& my_stack, int size){
-    for(int cnt=0; cnt<size; cnt++) my_stack.push(cnt+1);  
+void test_container(T& con){
+    message("create a con \"my_con\" of 10 elments ...");
+    fill(con, 10);
+    message("size of my_con", con.size());
+    message("create copy con \"cp\" from my_con");
+    T cp = con;
+    message("print the contents of cp");
+    cout << cp;
+    cout << "print the contents of my_con\n";
+    cout << con;
+    message("size of my_con", con.size());
+    message("size of cp", cp.size());
+    T con_1;        
+    con_1.push(19);
+    con_1.push(29);
+    // call move constructor
+    T con_2 = std::move(con_1);
+    message("print the contents of con_1, con_1 should be empty now");
+    cout << con_1;
+    // call assignment operator
+    con_1 = con_2;
+    message("print the contents of queue_1 again");
+    cout << con_1;
+    message("print the contents of queue_2");
+    cout << con_2;
+    message("create a new queue queue_3");
+    T con_3;
+    con_3.push(1); 
+    con_3.push(2); 
+    con_3.push(3);
+    message("create a new queue queue_4");
+    T con_4;
+    con_4.push(4); 
+    con_4.push(5); 
+    con_4.push(6);
+    con_4.push(7); 
+    con_4.push(8); 
+    con_4.push(9);
+    message("size of con_3", con_3.size());
+    message("size of con_4", con_4.size());
+    message("swapping con_3 with con_4");
+    con_3.swap(con_4);
+    message("size of con_3", con_3.size());
+    message("size of con_4", con_4.size());
+    message("print con_3");
+    cout << con_3;
+    message("print con_4");
+    cout << con_4;
+}
+template<typename T>
+void memory_test(T& Contnr){
+    message("push contents into the container ...");
+    for(auto cnt=0; cnt<5; cnt++){
+        message("heap memory", Contnr.dynamic());
+        message("Container size", Contnr.size());
+        fill(Contnr, 100);
+    }
+    message("heap memory", Contnr.dynamic());
+    message("Container size", Contnr.size());
+
+    message("popping contents from the container ...");
+    for(auto cnt=0; cnt<5; cnt++){
+        for(int cnt=0;cnt<100;cnt++) Contnr.pop();
+        message("heap memory", Contnr.dynamic());
+        message("Container size", Contnr.size());
+    }
 }
 
-int main(){
-        // create Stac object
-        Stack<int> my_stack;    
-        try{
-        message("create a stack \"my_stack\" of 10 elments ...");
-        for(int cnt=0; cnt<10; cnt++) my_stack.push(cnt+1);
+void demo_memory(){
+    Queue<int> queue_1;
+    message("Showing Queue Memory Allocation");
+    memory_test(queue_1);
+    message("***********************************************************");
+    Stack<int> stack_1;
+    message("Showing Stack Memory Allocation");
+    memory_test(stack_1);
+    message("************************************************************");
+}
 
-        message("size of my_stack", my_stack.size());
-        cout << "print the contents of my_stack\n";
-        print(my_stack);
-        message("size of my_stack", my_stack.size());
-
-        message("print the stack cp");
-        Stack<int> cp = my_stack;
-        print(cp);
-
-        message("fill my_stack with new 15 elements ...");
-        fill(my_stack, 15);
-
-        
-        Stack<int> stack_1;        
-        // push new elements to stack_1 
-        stack_1.push(19);
-        stack_1.push(29);
-        Stack<int> stack_2 = std::move(stack_1);
-        cout << "print the contents of stack_1\n";
-        stack_1 = my_stack;
-        print(stack_1);
-        cout << "print the contents of stack_2\n";
-        print(stack_2);
-        fill(stack_2, 5);
-        Stack<string> s3;
-        s3.push("one"); 
-        s3.push("two"); 
-        s3.push("three");
-        cout << "top of stack s3 is: " << s3.top() << endl;
-        Stack<int> s1{15};
-        
-        s1 = stack_2;
-        Stack<int> s2 = s1;
-        s2.push(5); 
-        s2.push(10);
-        s2.pop();
-        s2 = std::move(s1);
-        s1 = stack_2;
-        s1.pop();
-        s1.push(20);
-        s2.push(30);
-        cout << "s1.top() = " << s1.top() << " , s1.size() = " << s1.size() << " , s2.top() = " << s2.top() << " , s2.size() = " << s2.size() << endl;
-        s2.swap(s1);
-        cout << "s1.top() = " << s1.top() << " , s1.size() = " << s1.size() << " , s2.top() = " << s2.top() << " , s2.size() = " << s2.size() << endl;
+int main(){  
+    try{
+        // uncomment to show how memory is allocated
+        // demo_memory();
+        Queue<int> queue_1;
+        Stack<int> stack_1;
+        message("\nTesting of Queue APIs");
+        test_container(queue_1);
+        message("\n***********************************************************\n");
+        message("Testing of Stack APIs");
+        test_container(stack_1);
     }
 
     catch(Exception& e){cout << e.what() << endl;}
     catch(std::bad_alloc& e){cout << e.what() << endl;}
-    cout << "program is excited correctly\n";
+    cout << "program is closed correctly\n";
     return 0;
 }
